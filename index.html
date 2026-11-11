@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4EADF">
+<title>Convite · Agenda Compartilhada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Tokens do tema "Aconchegante" (app_theme.dart) */
+  :root {
+    --fundo-base: #F4EADF;
+    --texto-principal: #4A3426;
+    --texto-suave: #8B735F;
+    --acento: #C8694A;
+    --acento-sobre: #FFFFFF;
+    --vidro-forte: rgba(255,255,255,.6);
+    --vidro-normal: rgba(255,255,255,.5);
+    --vidro-borda: rgba(255,255,255,.65);
+    --campo-fundo: rgba(233,217,198,.7);
+    --campo-borda: rgba(214,194,170,.6);
+    --sombra-cartao: 0 10px 28px rgba(90,58,36,.16), 0 2px 6px rgba(90,58,36,.10);
+    --sombra-botao: 0 8px 16px rgba(122,58,34,.38), 0 2px 3px rgba(122,58,34,.38);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; }
+  body {
+    min-height: 100vh; min-height: 100dvh;
+    display: grid; place-items: center;
+    padding: max(24px, env(safe-area-inset-top)) 24px max(24px, env(safe-area-inset-bottom));
+    background: var(--fundo-base);
+    color: var(--texto-principal);
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* Manchas desfocadas do fundo */
+  .mancha { position: fixed; border-radius: 50%; filter: blur(35px); z-index: 0; pointer-events: none; }
+  .m1 { left: -18%; top: -6%;  width: 72vmin; height: 72vmin; background: rgba(232,160,127,.60); }
+  .m2 { left: 56%;  top: 31%;  width: 67vmin; height: 67vmin; background: rgba(169,193,163,.60); }
+  .m3 { left: -20%; top: 64%;  width: 72vmin; height: 72vmin; background: rgba(239,198,111,.55); }
+  .m4 { left: 59%;  top: 76%;  width: 56vmin; height: 56vmin; background: rgba(221,160,160,.45); }
+
+  /* Cartão de vidro */
+  .cartao {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 380px;
+    padding: 28px 22px 22px;
+    text-align: center;
+    background: var(--vidro-forte);
+    border: 1px solid var(--vidro-borda);
+    border-radius: 28px;
+    -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+    box-shadow: var(--sombra-cartao),
+                inset 0 1.5px 0 rgba(255,255,255,.9),
+                inset 0 -2px 3px rgba(138,100,70,.12);
+  }
+
+  .marca {
+    width: 88px; height: 88px; margin: 0 auto 18px;
+    display: grid; place-items: center;
+    background: var(--vidro-forte);
+    border: 1px solid var(--vidro-borda);
+    border-radius: 50%;
+    box-shadow: var(--sombra-cartao);
+  }
+  .marca svg { width: 40px; height: 40px; fill: var(--acento); }
+
+  h1 { margin: 0 0 6px; font-size: 26px; font-weight: 700; line-height: 1.15; }
+  .sub { margin: 0 0 22px; font-size: 14px; line-height: 1.35; color: var(--texto-suave); }
+
+  .rotulo { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 600; color: var(--texto-suave); text-align: left; }
+
+  /* Campo em baixo-relevo, igual ao InsetField */
+  .campo {
+    width: 100%; margin: 0 0 20px; padding: 14px 12px;
+    background: var(--campo-fundo);
+    border: 1px solid var(--campo-borda);
+    border-radius: 16px;
+    box-shadow: inset 0 2px 5px rgba(90,58,36,.22), 0 1px 0 rgba(255,255,255,.85);
+    font-family: inherit; font-size: 26px; font-weight: 700; letter-spacing: 2px;
+    color: var(--texto-principal); text-align: center; word-break: break-all;
+    user-select: all; -webkit-user-select: all;
+  }
+
+  .botao {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; margin-top: 12px;
+    font-family: inherit; font-size: 15px; font-weight: 600; text-decoration: none;
+    border-radius: 20px; cursor: pointer;
+    transition: transform .12s ease, filter .12s ease;
+  }
+  .botao:active { transform: scale(.98); filter: brightness(.97); }
+
+  .primario {
+    height: 54px; color: var(--acento-sobre);
+    background: var(--acento);
+    border: 1px solid rgba(255,255,255,.22);
+    box-shadow: var(--sombra-botao),
+                inset 0 2px 0 rgba(255,255,255,.45),
+                inset 0 -3px 4px rgba(90,36,16,.30);
+  }
+  .vidro {
+    height: 50px; color: var(--texto-suave);
+    background: var(--vidro-normal);
+    border: 1px solid var(--vidro-borda);
+    box-shadow: 0 2px 6px rgba(90,58,36,.10);
+  }
+  .primario svg { width: 18px; height: 18px; fill: currentColor; }
+
+  .nota {
+    margin: 20px 0 0; padding-top: 16px;
+    border-top: 1px solid rgba(74,52,38,.12);
+    font-size: 13px; line-height: 1.4; color: var(--texto-suave);
+  }
+  .nota b { color: var(--texto-principal); font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="mancha m1"></div><div class="mancha m2"></div>
+  <div class="mancha m3"></div><div class="mancha m4"></div>
+
+  <main class="cartao">
+    <div class="marca" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M16.53 11.06 15.47 10l-4.88 4.88-2.12-2.12-1.06 1.06L10.59 17l5.94-5.94zM19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+    </div>
+
+    <h1>Você foi convidado!</h1>
+    <p class="sub">Entre no grupo pela Agenda Compartilhada e veja os horários livres de todo mundo.</p>
+
+    <span class="rotulo">CÓDIGO</span>
+    <div class="campo" id="codigo">—</div>
+
+    <a class="botao primario" id="abrir" href="#">
+      <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+      Abrir no app
+    </a>
+    <button class="botao vidro" id="copiar" type="button">Copiar código</button>
+
+    <p class="nota">
+      Ainda não tem o app? Instale e use o código acima em <b>Entrar em grupo</b>.
+    </p>
+  </main>
+
+<script>
+  var codigo = new URLSearchParams(location.search).get('codigo') || '';
+  var campo = document.getElementById('codigo');
+  var abrir = document.getElementById('abrir');
+  var copiar = document.getElementById('copiar');
+
+  if (codigo) {
+    campo.textContent = codigo;
+    abrir.href = 'agenda://convite?codigo=' + encodeURIComponent(codigo);
+  } else {
+    // Link aberto sem código: o botão continua visível e só abre o app.
+    campo.textContent = 'Sem código';
+    campo.style.fontSize = '18px';
+    campo.style.letterSpacing = '0';
+    abrir.href = 'agenda://convite';
+    copiar.style.display = 'none';
+  }
+
+  copiar.addEventListener('click', function () {
+    function ok() {
+      copiar.textContent = 'Copiado!';
+      setTimeout(function () { copiar.textContent = 'Copiar código'; }, 2000);
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(codigo).then(ok);
+    } else {
+      var t = document.createElement('textarea');
+      t.value = codigo; document.body.appendChild(t);
+      t.select(); document.execCommand('copy'); t.remove(); ok();
+    }
+  });
+</script>
+</body>
+</html>
